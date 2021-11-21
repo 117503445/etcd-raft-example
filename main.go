@@ -16,17 +16,12 @@ package main
 
 import (
 	"flag"
-	"os"
 	"strings"
 
 	"go.etcd.io/etcd/raft/v3/raftpb"
 )
 
 func main() {
-
-	if err := os.MkdirAll("./data", os.ModePerm); err != nil {
-		panic(err)
-	}
 
 	cluster := flag.String("cluster", "http://127.0.0.1:9021", "comma separated cluster peers")
 	id := flag.Int("id", 1, "node ID")

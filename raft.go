@@ -90,6 +90,10 @@ func newRaftNode(id int, peers []string, join bool, getSnapshot func() ([]byte, 
 	commitC := make(chan *commit)
 	errorC := make(chan error)
 
+	if err := os.MkdirAll("./data", os.ModePerm); err != nil {
+		panic(err)
+	}
+
 	rc := &raftNode{
 		proposeC:    proposeC,
 		confChangeC: confChangeC,
