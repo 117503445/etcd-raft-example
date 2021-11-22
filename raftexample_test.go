@@ -62,8 +62,6 @@ func newCluster(n int) *cluster {
 	}
 
 	for i := range clus.peers {
-		os.RemoveAll(fmt.Sprintf("raftexample-%d", i+1))
-		os.RemoveAll(fmt.Sprintf("raftexample-%d-snap", i+1))
 		clus.proposeC[i] = make(chan string, 1)
 		clus.confChangeC[i] = make(chan raftpb.ConfChange, 1)
 		fn, snapshotTriggeredC := getSnapshotFn()
@@ -87,9 +85,6 @@ func (clus *cluster) Close() (err error) {
 		if erri := <-clus.errorC[i]; erri != nil {
 			err = erri
 		}
-		// clean intermediates
-		os.RemoveAll(fmt.Sprintf("raftexample-%d", i+1))
-		os.RemoveAll(fmt.Sprintf("raftexample-%d-snap", i+1))
 	}
 	return err
 }
@@ -126,7 +121,8 @@ func TestProposeOnCommit(t *testing.T) {
 		donec := make(chan struct{})
 		for i := range clus.peers {
 			// feedback for "n" committed entries, then update donec
-			go func(pC chan<- string, cC <-chan *commit, eC <-chan error) {
+			go func(pC chan<- string, cC <-chan *commit, eC <-chan error, index int) {
+				// t.Log("INDEX", index)
 				for n := 0; n < 100; n++ {
 					c, ok := <-cC
 					if !ok {
@@ -144,7 +140,7 @@ func TestProposeOnCommit(t *testing.T) {
 					// acknowledge the commits from other nodes so
 					// raft continues to make progress
 				}
-			}(clus.proposeC[i], clus.commitC[i], clus.errorC[i])
+			}(clus.proposeC[i], clus.commitC[i], clus.errorC[i], i)
 
 			// one message feedback per node
 			go func(i int) { clus.proposeC[i] <- "foo" }(i)
@@ -184,6 +180,11 @@ func TestCloseProposerInflight(t *testing.T) {
 		if c, ok := <-clus.commitC[0]; !ok || c.data[0] != "foo" {
 			t.Fatalf("Commit failed")
 		}
+
+		if c, ok := <-clus.commitC[0]; !ok || c.data[0] != "bar" {
+			t.Fatalf("Commit failed")
+		}
+
 	})
 
 }
