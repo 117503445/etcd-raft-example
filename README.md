@@ -8,10 +8,12 @@ a simple etcd raft example
 go mod download
 go test
 
-go install github.com/mattn/goreman
+go install github.com/mattn/goreman@latest
 goreman start
 
 go test -benchmem -run=^$ -bench ^BenchmarkCommit$ github.com/117503445/etcd-raft-example
+
+./build-run.sh
 ```
 
 ## License
