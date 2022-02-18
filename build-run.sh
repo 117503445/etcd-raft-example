@@ -1,3 +1,3 @@
-go build -o raftexample
+go build
 goreman start
 rm -r ./data

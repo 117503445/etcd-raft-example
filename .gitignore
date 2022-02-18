@@ -17,3 +17,4 @@ raftexample
 data
 
 .idea/
+etcd-raft-example
