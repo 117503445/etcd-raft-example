@@ -1,0 +1,7 @@
+PUT http://127.0.0.1:12380/my-key
+
+Hello
+
+###
+
+GET http://127.0.0.1:12380/my-key
