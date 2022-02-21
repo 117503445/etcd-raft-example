@@ -1,3 +1,4 @@
+rm -r ./data
 go build
 goreman start
-rm -r ./data
+
