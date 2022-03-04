@@ -21,8 +21,14 @@ go test -benchmem -run=^$ -bench ^BenchmarkCommit$ github.com/117503445/etcd-raf
 ./build-run.sh
 
 # in another terminal
-curl -L http://127.0.0.1:12380/4 -XPOST -d http://127.0.0.1:42379
+curl -L http://127.0.0.1:12380/4 -XPOST -d http://127.0.0.1:42379 # add node 4
 ./etcd-raft-example --id 4 --cluster http://127.0.0.1:12379,http://127.0.0.1:22379,http://127.0.0.1:32379,http://127.0.0.1:42379 --port 42380 --join
+
+
+curl -L http://127.0.0.1:12380/5 -XPOST -d http://127.0.0.1:52379 # add node 5
+./etcd-raft-example --id 5 --cluster http://127.0.0.1:12379,http://127.0.0.1:22379,http://127.0.0.1:32379,http://127.0.0.1:42379,http://127.0.0.1:52379 --port 52380 --join
+
+curl -L http://127.0.0.1:12380/4 -XDELETE # delete node 4
 ```
 
 ## doc
