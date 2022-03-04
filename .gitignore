@@ -18,3 +18,4 @@ data
 
 .idea/
 etcd-raft-example
+raft-wal-viewer
